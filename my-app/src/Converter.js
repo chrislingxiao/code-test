@@ -5,6 +5,7 @@ const Converter = () => {
     const [curriens, setCurriens] = useState([]);
     const [selectedCurr, setSelectedCurr] = useState(null);
     const [amount, setAmount] = useState(null);
+    const [convertedAmount, setConvertedAmount] = useState(0);
 
     const getCurrenies = async () => {
         const resp = await fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies.json');
@@ -15,8 +16,21 @@ const Converter = () => {
         setCurriens(currencyArr);
     }
 
-    const convert = () => {
+    const getRate = async () => {
+        const resp = await fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json');
+        const data = await resp.json();
+        return data.usd;
+    }
 
+    const convert = async () => {
+        console.log(selectedCurr);
+        console.log(amount);
+        const usdRate = await getRate();
+        const selectedRate = usdRate[selectedCurr];
+
+        const res = amount * selectedRate;
+
+        setConvertedAmount(res);
     }
 
     useEffect(() => {
@@ -26,7 +40,11 @@ const Converter = () => {
 
     return (
         <div className="conveter">
-            Amount: <input value={} />
+            Amount: <input value={amount} onChange={(event) => {
+                setAmount(parseInt(event.target.value));
+            }
+
+            } />
             From: <select onInput={(event) => {
                 setSelectedCurr(event.target.value);
             }}>
@@ -36,7 +54,9 @@ const Converter = () => {
                     <option value='usd'>USD</option>
                 </select>
 
-            <button onClick={convert}></button>
+            <button onClick={convert}>Convert</button>
+
+            <div>Converted Amount: {convertedAmount}</div>
         </div>
     )
 }
