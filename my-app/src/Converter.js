@@ -28,7 +28,7 @@ const Converter = () => {
         const usdRate = await getRate();
         const selectedRate = usdRate[selectedCurr];
 
-        const res = amount * selectedRate;
+        const res = amount / selectedRate;
 
         setConvertedAmount(res);
     }
